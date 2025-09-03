@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>เลือกตั้งสภานักเรียนโรงเรียนเบญจมราชูทิศ ปัตตานี</title>
+  <style>
+    body {
+      font-family: "Tahoma", sans-serif;
+      background-color: #f0f8ff;
+      margin: 0;
+      padding: 0;
+    }
+    .container {
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      min-height: 100vh;
+      padding-top: 50px;
+    }
+    .box {
+      background: white;
+      padding: 30px 40px;
+      border-radius: 10px;
+      box-shadow: 0 0 15px rgba(0,0,0,0.1);
+      width: 480px;
+    }
+    h1 {
+      text-align: center;
+      color: #0d6622;
+      margin-bottom: 25px;
+    }
+    label {
+      display: block;
+      margin-top: 15px;
+      font-weight: bold;
+      color: #0e6339;
+    }
+    input[type="text"], input[type="number"], input[type="password"] {
+      width: 100%;
+      padding: 8px 10px;
+      margin-top: 5px;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+      font-size: 16px;
+      box-sizing: border-box;
+    }
+    button {
+      margin-top: 25px;
+      width: 100%;
+      padding: 12px 0;
+      background-color: #0d9a51;
+      border: none;
+      border-radius: 6px;
+      color: white;
+      font-size: 18px;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #0d6622;
+    }
+    .message {
+      margin-top: 15px;
+      text-align: center;
+      font-size: 14px;
+    }
+    .error { color: red; }
+    .success { color: green; }
+
+    label.candidate {
+      display: flex;
+      align-items: center;
+      background-color: #f0f8ff;
+      border: 2px solid #0d8a41;
+      border-radius: 8px;
+      padding: 15px 20px;
+      margin-bottom: 20px;
+      cursor: pointer;
+      font-size: 18px;
+      color: hsl(148, 91%, 26%);
+      transition: background-color 0.3s ease;
+    }
+    label.candidate:hover { background-color: #cce0ff; }
+    input[type="radio"] {
+      margin-right: 15px;
+      transform: scale(1.3);
+    }
+    .candidate-img {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      object-fit: cover;
+      margin-right: 20px;
+      border: 2px solid #0d8636;
+    }
+    .admin-section {
+      text-align: center;
+      margin: 40px 0;
+    }
+    pre {
+      white-space: pre-wrap;
+      margin-top: 15px;
+      font-size: 16px;
+      color: #004080;
+      text-align: left;
+      max-width: 480px;
+      margin-left: auto;
+      margin-right: auto;
+      background-color: #e8f0fe;
+      padding: 15px;
+      border-radius: 8px;
+      border: 1px solid #b0c4de;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <!-- หน้าเข้าสู่ระบบนักเรียน -->
+    <div class="box" id="loginPage">
+      <div style="text-align: center;">
+        <img src="https://img2.pic.in.th/pic/aaded065739f570d686efca42148f76d.jpg" 
+             alt="โลโก้โรงเรียน" 
+             style="width: 140px; height: auto; margin-bottom: 20px;" />
+      </div>
+      <h1>เลือกตั้งสภานักเรียน<br>โรงเรียนเบญจมราชูทิศ จังหวัดปัตตานี</h1>
+      <form id="loginForm">
+        <label for="fullname">ชื่อ-นามสกุล</label>
+        <input type="text" id="fullname" placeholder="ใส่คำนำหน้า" required />
+
+        <label for="number">เลขที่ </label>
+        <input type="number" id="number" placeholder="" />
+
+        <label for="studentId">รหัสประจำตัว</label>
+        <input type="number" id="studentId" placeholder="" required />
+
+        <button type="submit">เข้าสู่ระบบ</button>
+        <div id="loginMessage" class="message"></div>
+      </form>
+      <p style="text-align:center; margin-top: 20px;">
+        <a href="#" onclick="showAdminLogin()">🔐 สำหรับผู้ดูแลระบบ</a>
+      </p>
+    </div>
+
+    <!-- หน้าเข้าสู่ระบบแอดมิน -->
+    <div class="box" id="adminLoginPage" style="display: none;">
+      <h1>เข้าสู่ระบบผู้ดูแล</h1>
+      <form id="adminLoginForm">
+        <label for="adminUsername">ชื่อผู้ใช้</label>
+        <input type="text" id="adminUsername" placeholder="" required />
+
+        <label for="adminPass">รหัสผ่าน</label>
+        <input type="password" id="adminPass" placeholder="" required />
+
+        <button type="submit">เข้าสู่ระบบ</button>
+        <div id="adminLoginMessage" class="message"></div>
+      </form>
+    </div>
+
+    <!-- หน้าโหวต -->
+    <div class="box" id="votePage" style="display: none;">
+      <h1>โหวตเลือกตั้งสภานักเรียน</h1>
+      <p id="alreadyVotedMsg" class="message error" style="display: none;"></p>
+      <form id="voteForm">
+        <label class="candidate">
+          <input type="radio" name="candidate" value="1" />
+          <img class="candidate-img" src="https://img5.pic.in.th/file/secure-sv1/In.jpg" alt="นายอินซาน เบญอาเหม็ด" />
+          นายอินซาน เบญอาเหม็ด
+        </label>
+        <label class="candidate">
+          <input type="radio" name="candidate" value="2" />
+          <img class="candidate-img" src="https://img5.pic.in.th/file/secure-sv1/Wan.jpg" alt="นางสาววันนูรมี แวหามะ" />
+          นางสาววันนูรมี แวหามะ
+        </label>
+        <label class="candidate">
+          <input type="radio" name="candidate" value="3" />
+          <img class="candidate-img" src="https://img2.pic.in.th/pic/Wee.jpg" alt="นางสาวนัสวีรา มาปะ" />
+          นางสาวนัสวีรา มาปะ
+        </label>
+        <button type="submit">ส่งโหวต</button>
+        <div id="resultMessage" class="message"></div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ส่วนสำหรับแอดมิน ดูผลโหวต -->
+  <div class="admin-section">
+    <button id="showSummaryBtn" style="display: none; background-color: #28a745; padding: 10px 25px; font-size: 18px; border: none; border-radius: 6px; cursor: pointer;">📊 ดูผลโหวต</button>
+    <pre id="voteSummary"></pre>
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      const loginPage = document.getElementById("loginPage");
+      const votePage = document.getElementById("votePage");
+      const adminLoginPage = document.getElementById("adminLoginPage");
+      const showSummaryBtn = document.getElementById("showSummaryBtn");
+      const voteSummary = document.getElementById("voteSummary");
+
+      const ADMIN_CREDENTIALS = { username: "Danich", password: "DT9418" };
+
+      // รายชื่อผู้มีสิทธิ์ลงคะแนน (ตัวอย่าง)
+      const voters = [
+        { id: 36545, fullname: "นายธัชพงศ์ ดำมณี", number: 1 },
+        { id: 36582, fullname: "นายวันอิบรอฮิม แวลาเตะ", number: 2 },
+        { id: 36583, fullname: "นายอาดิฟ ยุทธนาศาสตร์", number: 3 },
+        { id: 36604, fullname: "นายก้องฟ้า เฉลิมไท", number: 4 },
+        { id: 36608, fullname: "นายณัฐกรณ์ แย้มสรวล", number: 5 },
+        { id: 36613, fullname: "นายอินซาน เบญอาเหม็ด", number: 6 },
+        { id: 36668, fullname: "นายชามิล ศาสน์พิสุทธิกุล", number: 7 },
+        { id: 38018, fullname: "นายวันมูฮำหมัดอามีน บือราเฮ็ง", number: 8 },
+        { id: 36554, fullname: "นางสาวนิสรีน มะเซ็ง", number: 9 },
+        { id: 36555, fullname: "นางสาวนูรยุสรีตา พงษ์ประเสริฐ", number: 10 },
+        { id: 36591, fullname: "นางสาวทอฝัน วิชิตนันทน์", number: 11 },
+        { id: 36614, fullname: "นางสาววรัทยา แก้วประดับ", number: 12 },
+        { id: 36621, fullname: "นางสาวธัญวรัตน์ สมบูรณ์", number: 13 },
+        { id: 36625, fullname: "นางสาวนาเดีย แวหะยี", number: 14 },
+        { id: 36627, fullname: "นางสาวบุญติญา สุอุตะ", number: 15 },
+        { id: 36628, fullname: "นางสาวปพิชญา รักประเทศ", number: 16 },
+        { id: 36629, fullname: "นางสาวปัณฑิตา บุญเชิญ", number: 17 },
+        { id: 36632, fullname: "นางสาวปิยาพัชร อินทสมบูรณ์", number: 18 },
+        { id: 36634, fullname: "นางสาวพิชญาภา ดวงวิเชียร", number: 19 },
+        { id: 36637, fullname: "นางสาวรัตนา อ่อนศรีทอง", number: 20 },
+        { id: 36638, fullname: "นางสาวรุลลาร์ เปาะเสาะ", number: 21 },
+        { id: 36639, fullname: "นางสาววันนูรมี แวหามะ", number: 22 },
+        { id: 36642, fullname: "นางสาวอัสมาอ์ หะยีแวกะจิ", number: 23 },
+        { id: 36643, fullname: "นางสาวอุรัสยา แวฮามะ", number: 24 },
+        { id: 36667, fullname: "นางสาวอนินทิตา นัครามนตรี", number: 25 },
+        { id: 38419, fullname: "นางสาวกรกนก ภาวกังวาลวงษ์", number: 26 },
+        { id: 38420, fullname: "นางสาวดานิช หามะ", number: 27 },
+        { id: 38421, fullname: "นางสาวนัสวีรา มาปะ", number: 28 },
+        { id: 38422, fullname: "นางสาวนาเดียร์ จิสวัสดิ์", number: 29 },
+        { id: 38423, fullname: "นางสาวนูรมีย์ ดาหะมิ", number: 30 },
+        { id: 38424, fullname: "นางสาวนูรอิลฮัม ยะโกะ", number: 31 },
+        { id: 38425, fullname: "นางสาวมุมีนะห์ เจ๊ะเดร์", number: 32 },
+        { id: 38426, fullname: "นางสาววริศรา สะนิ", number: 33 }
+      ];
+
+      let currentVoterId = null;
+
+      // เก็บผลโหวต
+      const voteCounts = { 1: 0, 2: 0, 3: 0 };
+
+      // แสดงหน้าแอดมิน
+      window.showAdminLogin = function () {
+        loginPage.style.display = "none";
+        adminLoginPage.style.display = "block";
+      };
+
+      // เข้าสู่ระบบแอดมิน
+      document.getElementById("adminLoginForm").addEventListener("submit", function (e) {
+        e.preventDefault();
+
+        const username = document.getElementById("adminUsername").value.trim();
+        const password = document.getElementById("adminPass").value.trim();
+        const msg = document.getElementById("adminLoginMessage");
+
+        if (username === ADMIN_CREDENTIALS.username && password === ADMIN_CREDENTIALS.password) {
+          msg.textContent = "เข้าสู่ระบบสำเร็จ ✅";
+          msg.className = "message success";
+
+          setTimeout(() => {
+            adminLoginPage.style.display = "none";
+            votePage.style.display = "block";
+            showSummaryBtn.style.display = "inline-block";
+          }, 1000);
+        } else {
+          msg.textContent = "ชื่อผู้ใช้หรือรหัสผ่านไม่ถูกต้อง ❌";
+          msg.className = "message error";
+        }
+      });
+
+      // เข้าสู่ระบบนักเรียน (ตรวจสอบผู้มีสิทธิ์)
+      document.getElementById("loginForm").addEventListener("submit", function (e) {
+        e.preventDefault();
+
+        const fullnameInput = document.getElementById
